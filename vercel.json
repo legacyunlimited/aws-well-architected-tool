@@ -1,7 +1,7 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/landing/index.html" },
-    { "source": "/assessment", "destination": "/frontend/index.html" }
+    { "source": "/assessment", "destination": "/frontend/build/index.html" }
   ],
   "cleanUrls": true
 }
