@@ -1,10 +1,10 @@
 import React from "react";
-import Questions from "./pages/Questions";
+import EmailCapture from "./pages/EmailCapture";
 
 function App() {
   return (
     <div>
-      <Questions />
+      <EmailCapture />
     </div>
   );
 }
