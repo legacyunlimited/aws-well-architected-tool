@@ -1,0 +1,65 @@
+{
+  "questions": [
+    {
+      "pillar": "Operational Excellence",
+      "question": "Do you document and share lessons learned from operational events?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Operational Excellence",
+      "question": "Do you regularly evaluate workloads to identify improvement opportunities?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Security",
+      "question": "Do you manage access using least privilege principles?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Security",
+      "question": "Do you encrypt data at rest and in transit?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Reliability",
+      "question": "Does your workload have automated recovery from failures?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Reliability",
+      "question": "Do you test reliability procedures and failure scenarios regularly?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Performance Efficiency",
+      "question": "Do you use data to make informed decisions about architecture and scaling?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Performance Efficiency",
+      "question": "Do you take advantage of AWS services to improve performance efficiency?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Cost Optimization",
+      "question": "Do you regularly review your cost efficiency and right-size resources?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Cost Optimization",
+      "question": "Do you use AWS pricing models and cost tools effectively?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Sustainability",
+      "question": "Do you measure and track the environmental impact of your workload?",
+      "options": ["Yes", "No", "Partially"]
+    },
+    {
+      "pillar": "Sustainability",
+      "question": "Do you implement strategies to improve energy efficiency and reduce waste?",
+      "options": ["Yes", "No", "Partially"]
+    }
+  ]
+}
+
