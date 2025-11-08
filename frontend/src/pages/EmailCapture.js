@@ -24,8 +24,14 @@ export default function EmailCapture() {
       />
       <button
         onClick={() => {
-          if (email) setStarted(true);
-          else alert("Please enter your email to continue.");
+        const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+       if (isValidEmail) {
+       setStarted(true);
+       } else {
+        alert("Please enter a valid email address (e.g., you@company.com).");
+        }
+
         }}
         className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
       >
