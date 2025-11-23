@@ -1,12 +1,30 @@
 {
   "builds": [
-    { "src": "frontend/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } },
-    { "src": "landing/index.html", "use": "@vercel/static" }
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    },
+    {
+      "src": "landing/index.html",
+      "use": "@vercel/static"
+    }
   ],
   "routes": [
-    { "src": "/", "dest": "/landing/index.html" },
-    { "src": "/assessment", "dest": "/frontend/build/index.html" },
-    { "src": "/assessment/(.*)", "dest": "/frontend/build/index.html" }
+    {
+      "src": "/",
+      "dest": "/landing/index.html"
+    },
+    {
+      "src": "/assessment",
+      "dest": "/frontend/build/index.html"
+    },
+    {
+      "src": "/assessment/(.*)",
+      "dest": "/frontend/build/index.html"
+    }
   ]
 }
 
