@@ -10,6 +10,7 @@ const Questions = () => {
   const [error, setError] = useState(null);
   const [summary, setSummary] = useState(null);
 
+  // Load questions
   useEffect(() => {
     fetch("/questions.json")
       .then((res) => res.json())
@@ -24,6 +25,7 @@ const Questions = () => {
     }));
   };
 
+  // UPDATED handleSubmit()
   const handleSubmit = async () => {
     if (!email) {
       setError("Please enter your email before submitting.");
@@ -44,10 +46,22 @@ const Questions = () => {
         }
       );
 
-      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      console.log("Lambda response:", data);
 
-      setSuccess(true);
-      generateSummary();
+      if (!response.ok) {
+        setError(data.error || "Network error");
+        return;
+      }
+
+      // Your real backend returns: { status: "success", reportUrl: "..." }
+      if (data.status === "success") {
+        setSuccess(true);
+        generateSummary();
+      } else {
+        setError("Failed to save responses");
+      }
+
     } catch (err) {
       console.error(err);
       setError("Network error. Please try again later.");
@@ -76,7 +90,7 @@ const Questions = () => {
     setSummary(null);
   };
 
-  // 🧾 Generate PDF
+  // PDF Download
   const downloadPDF = () => {
     const doc = new jsPDF();
     const timestamp = new Date().toLocaleString();
@@ -195,6 +209,8 @@ const Questions = () => {
   );
 };
 
+
+// Styles
 const styles = {
   container: {
     maxWidth: "700px",
@@ -268,7 +284,7 @@ const styles = {
     padding: "15px",
     marginBottom: "15px",
     borderRadius: "6px",
-    border: "1px solid #eee",
+    border: "1px solid "#eee",
     boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
   },
   summaryButtons: {
