@@ -10,7 +10,6 @@ const Questions = () => {
   const [error, setError] = useState(null);
   const [summary, setSummary] = useState(null);
 
-  // Load questions
   useEffect(() => {
     fetch("/questions.json")
       .then((res) => res.json())
@@ -25,12 +24,13 @@ const Questions = () => {
     }));
   };
 
-  // UPDATED handleSubmit()
   const handleSubmit = async () => {
     if (!email) {
       setError("Please enter your email before submitting.");
       return;
     }
+
+    const contactId = email.replace(/[^a-zA-Z0-9]/g, "") + Date.now();
 
     setLoading(true);
     setError(null);
@@ -42,26 +42,21 @@ const Questions = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, answers })
+          body: JSON.stringify({
+            contactId,
+            accessKeyId: "",
+            secretAccessKey: "",
+            answers
+          })
         }
       );
 
-      const data = await response.json();
-      console.log("Lambda response:", data);
-
       if (!response.ok) {
-        setError(data.error || "Network error");
-        return;
+        throw new Error("Network response was not ok");
       }
 
-      // Your real backend returns: { status: "success", reportUrl: "..." }
-      if (data.status === "success") {
-        setSuccess(true);
-        generateSummary();
-      } else {
-        setError("Failed to save responses");
-      }
-
+      setSuccess(true);
+      generateSummary();
     } catch (err) {
       console.error(err);
       setError("Network error. Please try again later.");
@@ -75,8 +70,9 @@ const Questions = () => {
     questions.forEach((q) => {
       const ans = answers[q.question];
       if (!ans) return;
-      if (!summaryData[q.pillar])
+      if (!summaryData[q.pillar]) {
         summaryData[q.pillar] = { Yes: 0, No: 0, Partially: 0 };
+      }
       summaryData[q.pillar][ans]++;
     });
     setSummary(summaryData);
@@ -90,7 +86,6 @@ const Questions = () => {
     setSummary(null);
   };
 
-  // PDF Download
   const downloadPDF = () => {
     const doc = new jsPDF();
     const timestamp = new Date().toLocaleString();
@@ -109,11 +104,11 @@ const Questions = () => {
       y += 8;
 
       doc.setFontSize(12);
-      doc.text(`✅ Yes: ${results.Yes}`, 20, y);
+      doc.text(`Yes: ${results.Yes}`, 20, y);
       y += 6;
-      doc.text(`⚠️ Partially: ${results.Partially}`, 20, y);
+      doc.text(`Partially: ${results.Partially}`, 20, y);
       y += 6;
-      doc.text(`❌ No: ${results.No}`, 20, y);
+      doc.text(`No: ${results.No}`, 20, y);
       y += 10;
     });
 
@@ -143,6 +138,7 @@ const Questions = () => {
           {Object.entries(grouped).map(([pillar, qs]) => (
             <div key={pillar} style={styles.pillarSection}>
               <h2 style={styles.pillarTitle}>{pillar}</h2>
+
               {qs.map((q, index) => (
                 <div key={index} style={styles.questionCard}>
                   <p>{q.question}</p>
@@ -176,9 +172,9 @@ const Questions = () => {
           </button>
 
           {success && (
-            <p style={styles.success}>✅ Responses saved successfully!</p>
+            <p style={styles.success}>Responses saved successfully!</p>
           )}
-          {error && <p style={styles.error}>⚠️ {error}</p>}
+          {error && <p style={styles.error}>{error}</p>}
         </>
       )}
 
@@ -187,20 +183,22 @@ const Questions = () => {
           <h2 style={{ textAlign: "center", color: "#232f3e" }}>
             Assessment Summary
           </h2>
+
           {Object.entries(summary).map(([pillar, results]) => (
             <div key={pillar} style={styles.summaryCard}>
               <h3 style={{ color: "#0073bb" }}>{pillar}</h3>
-              <p>✅ Yes: {results.Yes}</p>
-              <p>⚠️ Partially: {results.Partially}</p>
-              <p>❌ No: {results.No}</p>
+              <p>Yes: {results.Yes}</p>
+              <p>Partially: {results.Partially}</p>
+              <p>No: {results.No}</p>
             </div>
           ))}
+
           <div style={styles.summaryButtons}>
             <button onClick={downloadPDF} style={styles.pdfButton}>
-              📄 Download PDF Summary
+              Download PDF Summary
             </button>
             <button onClick={resetAssessment} style={styles.restartButton}>
-              🔁 Start New Assessment
+              Start New Assessment
             </button>
           </div>
         </div>
@@ -209,8 +207,6 @@ const Questions = () => {
   );
 };
 
-
-// Styles
 const styles = {
   container: {
     maxWidth: "700px",
@@ -284,7 +280,7 @@ const styles = {
     padding: "15px",
     marginBottom: "15px",
     borderRadius: "6px",
-    border: "1px solid "#eee",
+    border: "1px solid #eee",
     boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
   },
   summaryButtons: {
