@@ -1,8 +1,12 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/landing/index.html" },
-    { "source": "/assessment", "destination": "/frontend/build/index.html" }
+  "builds": [
+    { "src": "frontend/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } },
+    { "src": "landing/index.html", "use": "@vercel/static" }
   ],
-  "cleanUrls": true
+  "routes": [
+    { "src": "/", "dest": "/landing/index.html" },
+    { "src": "/assessment", "dest": "/frontend/build/index.html" },
+    { "src": "/assessment/(.*)", "dest": "/frontend/build/index.html" }
+  ]
 }
 
