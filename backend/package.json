@@ -1,0 +1,16 @@
+{
+  "name": "kbcloudsolutions-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1488.0",
+    "axios": "^1.6.0",
+    "pdfkit": "^0.13.0",
+    "fs-extra": "^11.2.0"
+  }
+}
+

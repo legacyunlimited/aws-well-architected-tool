@@ -1,0 +1,18 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowReportBotUpload",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::723550620336:user/pdf-report-bot"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::kbcloudsolutions-reports/*"
+    }
+  ]
+}
+
