@@ -3,13 +3,24 @@
     {
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "build" }
+      "config": {
+        "distDir": "build"
+      }
     }
   ],
   "routes": [
-    { "src": "^/assessment$", "dest": "/index.html" },
-    { "src": "^/assessment/.*$", "dest": "/index.html" },
-    { "src": ".*", "dest": "/index.html" }
+    {
+      "src": "^/$",
+      "dest": "/frontend/public/index.html"
+    },
+    {
+      "src": "^/assessment$",
+      "dest": "/frontend/build/index.html"
+    },
+    {
+      "src": "^/assessment/(.*)$",
+      "dest": "/frontend/build/index.html"
+    }
   ]
 }
 
