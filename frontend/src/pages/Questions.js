@@ -222,7 +222,7 @@ const styles = {
   },
   pillarSection: {
     marginBottom: "30px",
-    borderBottom: "1px solid "#ddd",
+    borderBottom: "1px solid #ddd",
     paddingBottom: "10px"
   },
   pillarTitle: {
