@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
 
-const Questions = () => {
+const Questions = ({ email }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [summary, setSummary] = useState(null);
 
+  // Load questions from JSON
   useEffect(() => {
     fetch("/questions.json")
       .then((res) => res.json())
@@ -26,7 +26,7 @@ const Questions = () => {
 
   const handleSubmit = async () => {
     if (!email) {
-      setError("Please enter your email before submitting.");
+      setError("Missing email. Please restart the assessment.");
       return;
     }
 
@@ -70,17 +70,19 @@ const Questions = () => {
     questions.forEach((q) => {
       const ans = answers[q.question];
       if (!ans) return;
+
       if (!summaryData[q.pillar]) {
         summaryData[q.pillar] = { Yes: 0, No: 0, Partially: 0 };
       }
+
       summaryData[q.pillar][ans]++;
     });
+
     setSummary(summaryData);
   };
 
   const resetAssessment = () => {
     setAnswers({});
-    setEmail("");
     setSuccess(false);
     setError(null);
     setSummary(null);
@@ -94,10 +96,11 @@ const Questions = () => {
     doc.text("AWS Well-Architected Assessment Summary", 14, 20);
 
     doc.setFontSize(12);
-    doc.text(`Email: ${email || "N/A"}`, 14, 30);
+    doc.text(`Email: ${email}`, 14, 30);
     doc.text(`Date: ${timestamp}`, 14, 38);
 
     let y = 50;
+
     Object.entries(summary).forEach(([pillar, results]) => {
       doc.setFontSize(14);
       doc.text(pillar, 14, y);
@@ -112,7 +115,7 @@ const Questions = () => {
       y += 10;
     });
 
-    doc.save(`AWS-Assessment-${email || "summary"}.pdf`);
+    doc.save(`AWS-Assessment-${email}.pdf`);
   };
 
   const grouped = questions.reduce((acc, q) => {
@@ -127,13 +130,9 @@ const Questions = () => {
 
       {!summary && (
         <>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.emailInput}
-          />
+          <p style={{ textAlign: "center", marginBottom: 20 }}>
+            <strong>Email:</strong> {email}
+          </p>
 
           {Object.entries(grouped).map(([pillar, qs]) => (
             <div key={pillar} style={styles.pillarSection}>
@@ -221,16 +220,9 @@ const styles = {
     textAlign: "center",
     color: "#232f3e"
   },
-  emailInput: {
-    width: "100%",
-    padding: "10px",
-    marginBottom: "20px",
-    border: "1px solid #ccc",
-    borderRadius: "5px"
-  },
   pillarSection: {
     marginBottom: "30px",
-    borderBottom: "1px solid #ddd",
+    borderBottom: "1px solid "#ddd",
     paddingBottom: "10px"
   },
   pillarTitle: {
