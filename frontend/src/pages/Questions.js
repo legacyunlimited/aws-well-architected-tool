@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE;
+const API_BASE = "https://wus8k3xh18.execute-api.us-east-1.amazonaws.com/prod";
+
 
 export default function Questions() {
   const email = sessionStorage.getItem("assessmentEmail");
@@ -20,6 +21,15 @@ export default function Questions() {
         setError("Unable to load assessment questions. Please refresh.")
       );
   }, []);
+
+
+if (!questions || questions.length === 0) {
+  return (
+    <div style={{ padding: 40, textAlign: "center" }}>
+      <h2>Loading assessment questions…</h2>
+    </div>
+  );
+}
 
   const handleAnswerChange = (id, value) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
