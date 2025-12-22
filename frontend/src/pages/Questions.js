@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-const API_BASE = "https://wus8k3xh18.execute-api.us-east-1.amazonaws.com/prod";
 
 
 export default function Questions() {
@@ -13,14 +12,14 @@ export default function Questions() {
   const [error, setError] = useState(null);
 
   // Load questions from backend
-  useEffect(() => {
-    fetch(`${API_BASE}/assessment/questions`)
-      .then((res) => res.json())
-      .then(setQuestions)
-      .catch(() =>
-        setError("Unable to load assessment questions. Please refresh.")
-      );
-  }, []);
+useEffect(() => {
+  fetch("/questions.json")
+    .then((res) => res.json())
+    .then((data) => setQuestions(data.questions))
+    .catch(() =>
+      setError("Unable to load assessment questions. Please refresh.")
+    );
+}, []);
 
 
 if (!questions || questions.length === 0) {
