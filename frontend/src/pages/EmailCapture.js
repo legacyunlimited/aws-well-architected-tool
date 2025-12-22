@@ -4,13 +4,19 @@ export default function EmailCapture() {
   const [email, setEmail] = useState("");
 
   const startAssessment = () => {
+   console.log("startAssessment called with email:", email);
+
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+   console.log("isValidEmail:", isValidEmail);
 
     if (!isValidEmail) {
       alert("Please enter a valid email address.");
       return;
     }
-
+   
+   console.log("SETTING started = true");
+  setStarted(true);
+};
     // Store email for next step
     sessionStorage.setItem("assessmentEmail", email);
 
