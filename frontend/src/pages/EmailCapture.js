@@ -1,28 +1,32 @@
 import React, { useState } from "react";
+import Questions from "./Questions";
 
 export default function EmailCapture() {
   const [email, setEmail] = useState("");
+  const [started, setStarted] = useState(false);
 
   const startAssessment = () => {
-   console.log("startAssessment called with email:", email);
+    console.log("startAssessment called with email:", email);
 
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-   console.log("isValidEmail:", isValidEmail);
+    console.log("isValidEmail:", isValidEmail);
 
     if (!isValidEmail) {
       alert("Please enter a valid email address.");
       return;
     }
-   
-   console.log("SETTING started = true");
-  setStarted(true);
-};
+
     // Store email for next step
     sessionStorage.setItem("assessmentEmail", email);
 
-    // Go to questions page
-   
+    console.log("SETTING started = true");
+    setStarted(true);
   };
+
+  if (started) {
+    console.log("RENDERING QUESTIONS COMPONENT");
+    return <Questions email={email} />;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-8 text-center">
@@ -41,16 +45,15 @@ export default function EmailCapture() {
         className="border border-gray-300 rounded-md p-2 w-64 mb-4 text-center"
       />
 
-<button
-  onClick={() => {
-    console.log("BUTTON CLICKED");
-    startAssessment();
-  }}
-  className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold"
->
-  Start Free Assessment
-</button>
-
+      <button
+        onClick={() => {
+          console.log("BUTTON CLICKED");
+          startAssessment();
+        }}
+        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold"
+      >
+        Start Free Assessment
+      </button>
     </div>
   );
 }
