@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-
-
 export default function Questions() {
   const email = sessionStorage.getItem("assessmentEmail");
 
@@ -11,29 +9,30 @@ export default function Questions() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Load questions from backend
-useEffect(() => {
-  fetch("/questions.json")
-    .then((res) => res.json())
-    .then((data) => setQuestions(data.questions))
-    .catch(() =>
-      setError("Unable to load assessment questions. Please refresh.")
+  // Load questions from public/questions.json
+  useEffect(() => {
+    fetch("/questions.json")
+      .then((res) => res.json())
+      .then((data) => setQuestions(data.questions))
+      .catch(() =>
+        setError("Unable to load assessment questions. Please refresh.")
+      );
+  }, []);
+
+  // Loading screen
+  if (!questions || questions.length === 0) {
+    return (
+      <div style={{ padding: 40, textAlign: "center" }}>
+        <h2>Loading assessment questions…</h2>
+      </div>
     );
-}, []);
-
-
-if (!questions || questions.length === 0) {
-  return (
-    <div style={{ padding: 40, textAlign: "center" }}>
-      <h2>Loading assessment questions…</h2>
-    </div>
-  );
-}
+  }
 
   const handleAnswerChange = (id, value) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
   };
 
+  // STUBBED submit (frontend test only)
   const handleSubmit = async () => {
     if (!email) {
       setError("Missing email. Please restart the assessment.");
@@ -43,20 +42,24 @@ if (!questions || questions.length === 0) {
     setLoading(true);
     setError(null);
 
-    try {
-      const res = await fetch(`${API_BASE}/assessment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, answers })
-      });
+    console.log("Assessment submitted:", { email, answers });
 
-      const data = await res.json();
-      setResult(data);
-    } catch {
-      setError("Submission failed. Please try again.");
-    } finally {
+    // Fake results for UI validation
+    setTimeout(() => {
+      setResult({
+        overallScore: 72,
+        severity: "Medium",
+        pillarScores: {
+          Security: 70,
+          Reliability: 75,
+          Cost: 65,
+          Performance: 80,
+          OperationalExcellence: 70,
+          Sustainability: 70
+        }
+      });
       setLoading(false);
-    }
+    }, 600);
   };
 
   // Group questions by pillar
@@ -89,7 +92,7 @@ if (!questions || questions.length === 0) {
         </div>
 
         <p className="text-gray-600">
-          A detailed PDF report has been emailed to you with recommended next
+          A detailed PDF report will be emailed to you with recommended next
           steps.
         </p>
       </div>
@@ -104,7 +107,6 @@ if (!questions || questions.length === 0) {
       </h1>
 
       {error && <p className="text-red-600 text-center mb-4">{error}</p>}
-      {questions.length === 0 && <p>Loading questions…</p>}
 
       {Object.entries(grouped).map(([pillar, qs]) => (
         <div key={pillar} className="mb-8">
