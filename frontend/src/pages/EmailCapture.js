@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 export default function EmailCapture() {
   const [email, setEmail] = useState("");
-  const navigate = useNavigate();
 
   const startAssessment = () => {
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -16,7 +15,7 @@ export default function EmailCapture() {
     sessionStorage.setItem("assessmentEmail", email);
 
     // Go to questions page
-    navigate("/questions");
+   
   };
 
   return (
