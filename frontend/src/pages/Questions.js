@@ -19,7 +19,6 @@ export default function Questions() {
       );
   }, []);
 
-  // Loading screen
   if (!questions || questions.length === 0) {
     return (
       <div style={{ padding: 40, textAlign: "center" }}>
@@ -28,34 +27,32 @@ export default function Questions() {
     );
   }
 
-  const handleAnswerChange = (id, value) => {
-    setAnswers((prev) => ({ ...prev, [id]: value }));
+  const handleAnswerChange = (question, value) => {
+    setAnswers((prev) => ({ ...prev, [question]: value }));
   };
 
-  // STUBBED submit (frontend test only)
-  const handleSubmit = async () => {
+  // Stubbed submit (frontend test)
+  const handleSubmit = () => {
     if (!email) {
       setError("Missing email. Please restart the assessment.");
       return;
     }
 
+    console.log("Submitted answers:", { email, answers });
+
     setLoading(true);
-    setError(null);
 
-    console.log("Assessment submitted:", { email, answers });
-
-    // Fake results for UI validation
     setTimeout(() => {
       setResult({
         overallScore: 72,
         severity: "Medium",
         pillarScores: {
-          Security: 70,
-          Reliability: 75,
-          Cost: 65,
-          Performance: 80,
-          OperationalExcellence: 70,
-          Sustainability: 70
+          "Operational Excellence": 70,
+          Security: 75,
+          Reliability: 68,
+          "Performance Efficiency": 80,
+          "Cost Optimization": 65,
+          Sustainability: 72
         }
       });
       setLoading(false);
@@ -112,18 +109,20 @@ export default function Questions() {
         <div key={pillar} className="mb-8">
           <h2 className="text-xl font-semibold mb-3">{pillar}</h2>
 
-          {qs.map((q) => (
-            <div key={q.id} className="mb-3">
-              <p className="mb-1">{q.text}</p>
+          {qs.map((q, idx) => (
+            <div key={idx} className="mb-3">
+              <p className="mb-1">{q.question}</p>
 
               {q.options.map((opt) => (
                 <label key={opt} className="mr-4">
                   <input
                     type="radio"
-                    name={q.id}
+                    name={q.question}
                     value={opt}
-                    checked={answers[q.id] === opt}
-                    onChange={() => handleAnswerChange(q.id, opt)}
+                    checked={answers[q.question] === opt}
+                    onChange={() =>
+                      handleAnswerChange(q.question, opt)
+                    }
                   />{" "}
                   {opt}
                 </label>
