@@ -14,7 +14,7 @@
         .stat-card h3 { color: #666; font-size: 14px; margin-bottom: 10px; }
         .stat-card .value { font-size: 32px; font-weight: bold; color: #3fb950; }
         .referral-section { background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .referral-link { background: #f0f0f0; padding: 15px; border-radius: 8px; display: flex; gap: 10px; align-items: center; margin: 15px 0; }
+        .referral-link { background: #f0f0f0; padding: 15px; border-radius: 8px; display: flex; gap: 10px; align-items: center; margin: 15px 0; flex-wrap: wrap; }
         .referral-link code { flex: 1; font-size: 14px; word-break: break-all; }
         button { background: #3fb950; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
         button:hover { background: #2e8b57; }
@@ -78,13 +78,18 @@
         const API_URL = 'https://kbcloud-backend-production.up.railway.app';
         let authToken = localStorage.getItem('partner_token');
 
+        console.log('Page loaded, token exists:', !!authToken);
+
         if (authToken) {
+            document.getElementById('login-section').style.display = 'none';
             loadDashboard();
         }
 
         async function login() {
             const email = document.getElementById('email').value;
             const errorDiv = document.getElementById('login-error');
+
+            console.log('Login attempt for:', email);
 
             if (!email) {
                 errorDiv.textContent = 'Please enter your email';
@@ -101,18 +106,25 @@
                     body: JSON.stringify({ email })
                 });
 
+                console.log('Login response status:', response.status);
                 const data = await response.json();
 
                 if (!response.ok) {
                     throw new Error(data.error || 'Login failed');
                 }
 
-                authToken = data.token;
-                localStorage.setItem('partner_token', authToken);
-                localStorage.setItem('partner_email', email);
-                
-                await loadDashboard();
+                if (data.token) {
+                    localStorage.setItem('partner_token', data.token);
+                    localStorage.setItem('partner_email', email);
+                    authToken = data.token;
+                    console.log('Login successful, loading dashboard...');
+                    document.getElementById('login-section').style.display = 'none';
+                    await loadDashboard();
+                } else {
+                    throw new Error('No token received');
+                }
             } catch (error) {
+                console.error('Login error:', error);
                 errorDiv.textContent = error.message;
                 errorDiv.style.display = 'block';
             }
@@ -120,32 +132,34 @@
 
         async function loadDashboard() {
             try {
-                const dashboardRes = await fetch(`${API_URL}/api/partners/dashboard`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                console.log('Loading dashboard with token...');
+                
+                const response = await fetch(`${API_URL}/api/partners/dashboard`, {
+                    headers: { 
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
 
-                if (!dashboardRes.ok) {
-                    if (dashboardRes.status === 401) {
+                console.log('Dashboard response status:', response.status);
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        console.log('Unauthorized, logging out');
                         logout();
                         return;
                     }
-                    throw new Error('Failed to load dashboard');
+                    throw new Error(`Dashboard returned ${response.status}`);
                 }
 
-                const data = await dashboardRes.json();
-
-                const linkRes = await fetch(`${API_URL}/api/partners/referral-link`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-
-                const linkData = await linkRes.json();
+                const data = await response.json();
+                console.log('Dashboard data received:', data);
 
                 document.getElementById('monthly-earnings').innerHTML = `$${data.stats.monthlyEarnings.toFixed(2)}`;
                 document.getElementById('active-clients').innerHTML = data.stats.activeClients;
                 document.getElementById('total-paid').innerHTML = `$${data.stats.totalPaidOut.toFixed(2)}`;
-                document.getElementById('referral-link').innerHTML = linkData.referralLink;
+                document.getElementById('referral-link').innerHTML = data.partner.referralLink;
 
-                document.getElementById('login-section').style.display = 'none';
                 document.getElementById('dashboard-section').style.display = 'block';
             } catch (error) {
                 console.error('Error loading dashboard:', error);
