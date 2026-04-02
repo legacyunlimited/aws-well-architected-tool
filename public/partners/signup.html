@@ -1,40 +1,130 @@
-async function signup() {
-  // ... existing validation code ...
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Signup – KBCloud Solutions</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        h1 { font-size: 28px; margin-bottom: 10px; color: #333; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+        button { width: 100%; background: #3fb950; color: white; border: none; padding: 14px; border-radius: 6px; font-size: 16px; cursor: pointer; }
+        button:hover { background: #2e8b57; }
+        .commission-badge { background: #e8f5e9; padding: 15px; border-radius: 6px; text-align: center; margin: 20px 0; }
+        .commission-badge .percent { font-size: 24px; font-weight: bold; color: #3fb950; }
+        .error { color: red; padding: 10px; background: #ffeeee; border-radius: 6px; margin: 10px 0; display: none; }
+        .success { color: green; padding: 10px; background: #eeffee; border-radius: 6px; margin: 10px 0; display: none; }
+        .result { margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 6px; display: none; }
+        .result code { word-break: break-all; font-size: 12px; display: block; margin: 10px 0; padding: 10px; background: #e9ecef; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Become a Partner</h1>
+            <div class="commission-badge">
+                <span class="percent">20%</span> recurring monthly commission
+            </div>
 
-  try {
-    const response = await fetch(`${API_URL}/api/partners/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ firstName, lastName, email, company, website, brandColor, logoUrl })
-    });
+            <div id="error" class="error"></div>
+            <div id="success" class="success"></div>
 
-    const data = await response.json();
+            <input type="text" id="firstName" placeholder="First Name" required>
+            <input type="text" id="lastName" placeholder="Last Name" required>
+            <input type="email" id="email" placeholder="Email Address" required>
+            <input type="text" id="company" placeholder="Company Name" required>
+            <input type="url" id="website" placeholder="Website (optional)">
+            <input type="color" id="brandColor" value="#3fb950">
+            <input type="url" id="logoUrl" placeholder="Logo URL (optional)">
 
-    if (!response.ok) {
-      throw new Error(data.error || 'Signup failed');
-    }
+            <button onclick="signup()">Sign Up →</button>
 
-    // Auto-login after signup
-    const loginResponse = await fetch(`${API_URL}/api/partners/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
+            <div id="result" class="result">
+                <h3>Welcome to the Partner Program!</h3>
+                <p>Your referral link:</p>
+                <code id="referralLink"></code>
+                <button onclick="copyLink()" style="margin-top: 10px; width: auto;">Copy Link</button>
+                <p style="margin-top: 15px;">
+                    <a href="/partners/dashboard.html" id="dashboardLink">Go to Dashboard →</a>
+                </p>
+            </div>
+        </div>
+    </div>
 
-    const loginData = await loginResponse.json();
-    
-    if (loginResponse.ok) {
-      localStorage.setItem('partner_token', loginData.token);
-      localStorage.setItem('partner_email', email);
-      window.location.href = '/partners/dashboard.html';
-    } else {
-      // Show referral link even if auto-login fails
-      document.getElementById('referralLink').textContent = data.referralLink;
-      document.getElementById('dashboardLink').href = '/partners/dashboard.html';
-      resultDiv.style.display = 'block';
-    }
-  } catch (error) {
-    errorDiv.textContent = error.message;
-    errorDiv.style.display = 'block';
-  }
-}
+    <script>
+        const API_URL = 'https://kbcloud-backend-production.up.railway.app';
+
+        async function signup() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const company = document.getElementById('company').value;
+            const website = document.getElementById('website').value;
+            const brandColor = document.getElementById('brandColor').value;
+            const logoUrl = document.getElementById('logoUrl').value;
+
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+            const resultDiv = document.getElementById('result');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            resultDiv.style.display = 'none';
+
+            if (!firstName || !lastName || !email || !company) {
+                errorDiv.textContent = 'Please fill in all required fields';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/partners/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, email, company, website, brandColor, logoUrl })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Signup failed');
+                }
+
+                // Auto-login after signup
+                const loginResponse = await fetch(`${API_URL}/api/partners/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const loginData = await loginResponse.json();
+
+                if (loginResponse.ok) {
+                    localStorage.setItem('partner_token', loginData.token);
+                    localStorage.setItem('partner_email', email);
+                    window.location.href = '/partners/dashboard.html';
+                } else {
+                    // Show referral link even if auto-login fails
+                    successDiv.textContent = 'Account created successfully!';
+                    successDiv.style.display = 'block';
+                    document.getElementById('referralLink').textContent = data.referralLink;
+                    document.getElementById('dashboardLink').href = '/partners/dashboard.html';
+                    resultDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function copyLink() {
+            const link = document.getElementById('referralLink').textContent;
+            navigator.clipboard.writeText(link);
+            alert('Referral link copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
