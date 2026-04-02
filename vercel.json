@@ -1,16 +1,15 @@
+
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "frontend/build"
-      }
-    }
-  ],
+  "public": true,
   "routes": [
-    { "src": "/(.*)", "dest": "frontend/$1" }
+    {
+      "src": "/partners/(.*)",
+      "dest": "/partners/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
   ]
 }
-
