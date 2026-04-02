@@ -1,11 +1,13 @@
-
 {
   "version": 2,
-  "public": true,
   "routes": [
     {
-      "src": "/partners/(.*)",
-      "dest": "/partners/$1"
+      "src": "/partners/signup.html",
+      "dest": "/partners/signup.html"
+    },
+    {
+      "src": "/partners/dashboard.html",
+      "dest": "/partners/dashboard.html"
     },
     {
       "src": "/(.*)",
