@@ -1,0 +1,40 @@
+async function signup() {
+  // ... existing validation code ...
+
+  try {
+    const response = await fetch(`${API_URL}/api/partners/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firstName, lastName, email, company, website, brandColor, logoUrl })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Signup failed');
+    }
+
+    // Auto-login after signup
+    const loginResponse = await fetch(`${API_URL}/api/partners/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    const loginData = await loginResponse.json();
+    
+    if (loginResponse.ok) {
+      localStorage.setItem('partner_token', loginData.token);
+      localStorage.setItem('partner_email', email);
+      window.location.href = '/partners/dashboard.html';
+    } else {
+      // Show referral link even if auto-login fails
+      document.getElementById('referralLink').textContent = data.referralLink;
+      document.getElementById('dashboardLink').href = '/partners/dashboard.html';
+      resultDiv.style.display = 'block';
+    }
+  } catch (error) {
+    errorDiv.textContent = error.message;
+    errorDiv.style.display = 'block';
+  }
+}
