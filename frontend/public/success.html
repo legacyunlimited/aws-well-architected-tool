@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful - KBCloud Solutions</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 500px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    .checkmark {
+      width: 80px;
+      height: 80px;
+      background: #3fb950;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .checkmark svg {
+      width: 50px;
+      height: 50px;
+      color: white;
+    }
+    h1 { color: #333; margin-bottom: 10px; }
+    p { color: #666; margin-bottom: 20px; line-height: 1.5; }
+    .next-steps {
+      text-align: left;
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    .next-steps h3 { margin-top: 0; color: #3fb950; }
+    button {
+      background: #3fb950;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover { background: #2e8b57; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="checkmark">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+      </svg>
+    </div>
+    <h1>Welcome to KBCloud Solutions!</h1>
+    <p>Your subscription has been successfully activated.</p>
+    <div class="next-steps">
+      <h3>What happens next?</h3>
+      <ul>
+        <li>✅ You'll receive a confirmation email shortly</li>
+        <li>✅ We'll begin scanning your AWS account within 24 hours</li>
+        <li>✅ You'll receive your first cost optimization report within 48 hours</li>
+      </ul>
+    </div>
+    <button onclick="window.location.href='/'">Return to Home</button>
+  </div>
+</body>
+</html>
