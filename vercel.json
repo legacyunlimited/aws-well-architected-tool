@@ -11,6 +11,10 @@
   ],
   "routes": [
     {
+      "src": "/success.html",
+      "dest": "/success.html"
+    },
+    {
       "src": "/success",
       "dest": "/success.html"
     },
