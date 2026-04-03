@@ -1,17 +1,26 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "frontend/build"
+      }
+    }
+  ],
   "routes": [
     {
-      "src": "/partners/signup.html",
-      "dest": "/partners/signup.html"
+      "src": "/success",
+      "dest": "/success.html"
     },
     {
-      "src": "/partners/dashboard.html",
-      "dest": "/partners/dashboard.html"
+      "src": "/partners/(.*)",
+      "dest": "/frontend/public/partners/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "/frontend/build/$1"
     }
   ]
 }
