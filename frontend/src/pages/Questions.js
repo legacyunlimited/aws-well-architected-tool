@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const API_BASE = "https://wus8k3xh18.execute-api.us-east-1.amazonaws.com/prod";
+const API_BASE = "https://kbcloud-backend-production.up.railway.app";
 
 export default function Questions() {
   const email = sessionStorage.getItem("assessmentEmail");
