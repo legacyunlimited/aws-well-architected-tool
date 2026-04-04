@@ -57,6 +57,19 @@ export default function Questions() {
       }
 
       const assessmentData = await assessmentRes.json();
+    // Show score to user
+    const userConfirmed = window.confirm(
+      `Your Well-Architected Score: ${assessmentData.score}/100\n\n` +
+      `Recommended Plan: ${assessmentData.recommendedTier}\n\n` +
+      `${assessmentData.yesCount} out of ${assessmentData.totalQuestions} best practices followed\n\n` +
+      `Click OK to upgrade to the full platform for $497/month\n` +
+      `Click Cancel to continue with the free assessment.`
+    );
+    if (!userConfirmed) {
+      setLoading(false);
+      return;
+    }
+
       setScoreData(assessmentData);
       setShowScoreModal(true);
       setLoading(false);
@@ -153,148 +166,3 @@ export default function Questions() {
 
       <div className="text-center mb-6">
         <p className="text-sm text-gray-500 max-w-md mx-auto">
-          <strong>What happens next?</strong>
-          <br />• We calculate your Well-Architected score instantly
-          <br />• You receive a detailed PDF report with findings
-          <br />• Upgrade to our paid platform for continuous AWS scanning
-          <br />• No commitment - try the free assessment first
-        </p>
-      </div>
-
-      <div className="text-center">
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg"
-        >
-          {loading ? "Calculating score..." : "Continue"}
-        </button>
-      </div>
-
-      {showScoreModal && scoreData && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            maxWidth: '500px',
-            width: '90%',
-            padding: '32px',
-            textAlign: 'center',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
-          }}>
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: getRiskLevel(scoreData.score).color,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 20px'
-            }}>
-              <span style={{
-                fontSize: '32px',
-                fontWeight: 'bold',
-                color: 'white'
-              }}>{scoreData.score}</span>
-            </div>
-
-            <h2 style={{ fontSize: '24px', marginBottom: '8px' }}>
-              Your Well-Architected Score
-            </h2>
-
-            <p style={{
-              fontSize: '18px',
-              fontWeight: 'bold',
-              color: getRiskLevel(scoreData.score).color,
-              marginBottom: '20px'
-            }}>
-              {getRiskLevel(scoreData.score).text}
-            </p>
-
-            <div style={{
-              textAlign: 'left',
-              backgroundColor: '#f5f5f5',
-              padding: '16px',
-              borderRadius: '12px',
-              marginBottom: '20px'
-            }}>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>Recommended Plan:</strong> {scoreData.recommendedTier}
-              </p>
-              <p style={{ marginBottom: '8px' }}>
-                <strong>Questions Answered:</strong> {scoreData.totalQuestions}
-              </p>
-              <p>
-                <strong>Best Practices Followed:</strong> {scoreData.yesCount} out of {scoreData.totalQuestions}
-              </p>
-            </div>
-
-            <button
-              onClick={handleUpgrade}
-              style={{
-                backgroundColor: '#3fb950',
-                color: 'white',
-                padding: '14px 24px',
-                borderRadius: '8px',
-                border: 'none',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                width: '100%',
-                marginBottom: '12px'
-              }}
-            >
-              Upgrade to Full Platform - $497/month
-            </button>
-
-            <button
-              onClick={() => {
-                setShowScoreModal(false);
-              }}
-              style={{
-                backgroundColor: 'transparent',
-                color: '#666',
-                padding: '10px 20px',
-                borderRadius: '8px',
-                border: '1px solid #ddd',
-                fontSize: '14px',
-                cursor: 'pointer',
-                width: '100%'
-              }}
-            >
-              Email me my score
-            </button>
-
-            <button
-              onClick={() => setShowScoreModal(false)}
-              style={{
-                backgroundColor: 'transparent',
-                color: '#999',
-                padding: '8px 16px',
-                borderRadius: '8px',
-                border: 'none',
-                fontSize: '12px',
-                cursor: 'pointer',
-                marginTop: '12px'
-              }}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
