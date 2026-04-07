@@ -57,6 +57,8 @@ export default function Questions() {
       /* -------------------------------
          STEP 1: Submit assessment
       -------------------------------- */
+    console.log("Step 1: Calling assessment API...");
+
       const assessmentRes = await fetch(`${API_BASE}/assessment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,6 +70,8 @@ export default function Questions() {
       }
 
       const assessmentData = await assessmentRes.json();
+    console.log("Step 2: Got response:", assessmentData);
+
       const { recommendedTier } = assessmentData;
 
       if (!recommendedTier) {
