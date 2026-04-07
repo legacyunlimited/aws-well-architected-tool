@@ -36,6 +36,15 @@ export default function Questions() {
   };
 
   const handleSubmit = async () => {
+    // Check if all questions are answered
+    const totalQuestions = questions.length;
+    const answeredQuestions = Object.keys(answers).length;
+    if (answeredQuestions !== totalQuestions) {
+      setError(`Please answer all ${totalQuestions} questions. You have answered ${answeredQuestions}.`);
+      setLoading(false);
+      return;
+    }
+
     if (!email) {
       setError("Missing email. Please restart the assessment.");
       return;
