@@ -2,9 +2,12 @@ import EmailCapture from "./pages/EmailCapture";
 import Services from './pages/Services';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Questions from './pages/Questions';
+import CustomerPortal from './pages/CustomerPortal';
+
 
 function App() {
   const path = window.location.pathname;
+
 
   // Assessment entry - captures email first
   if (path === "/assessment") {
@@ -25,7 +28,10 @@ function App() {
   if (path === "/payment-success") {
     return <PaymentSuccess />;
   }
-
+  
+  if (path === "/customer-portal") {
+  return <CustomerPortal />;
+}
   // Marketing homepage (root path)
   return (
     <div style={{
