@@ -9,7 +9,6 @@ export default function CustomerPortal() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Check for stored email on load
   useEffect(() => {
     const storedEmail = sessionStorage.getItem('assessmentEmail') || localStorage.getItem('customerEmail');
     if (storedEmail) {
@@ -23,7 +22,6 @@ export default function CustomerPortal() {
     setError(null);
     
     try {
-      // Verify customer exists
       const verifyRes = await fetch(`${API_BASE}/customer/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -38,7 +36,6 @@ export default function CustomerPortal() {
         return;
       }
       
-      // Load reports
       const reportsRes = await fetch(`${API_BASE}/customer/reports/${encodeURIComponent(customerEmail)}`);
       const reportsData = await reportsRes.json();
       
@@ -61,14 +58,8 @@ export default function CustomerPortal() {
   
   const handleDownload = async (reportId) => {
     try {
-      const response = await fetch(`${API_BASE}/customer/report/${reportId}/download?email=${encodeURIComponent(email)}`);
-      const data = await response.json();
-      
-      // For now, show a message
+      await fetch(`${API_BASE}/customer/report/${reportId}/download?email=${encodeURIComponent(email)}`);
       alert(`Report download requested. Check your email or contact support.`);
-      
-      // When S3 is set up, you'd do:
-      // window.open(data.downloadUrl, '_blank');
     } catch (err) {
       alert('Download failed. Please try again.');
     }
