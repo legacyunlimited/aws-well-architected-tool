@@ -1,14 +1,32 @@
 import EmailCapture from "./pages/EmailCapture";
+import Services from './pages/Services';
+import PaymentSuccess from './pages/PaymentSuccess';
+import Questions from './pages/Questions';
 
 function App() {
   const path = window.location.pathname;
 
-  // Assessment entry
+  // Assessment entry - captures email first
   if (path === "/assessment") {
     return <EmailCapture />;
   }
 
-  // Marketing homepage
+  // Questions page - after email capture
+  if (path === "/questions") {
+    return <Questions />;
+  }
+
+  // Services page - pricing and products
+  if (path === "/services") {
+    return <Services />;
+  }
+
+  // Payment success page - after Stripe checkout
+  if (path === "/payment-success") {
+    return <PaymentSuccess />;
+  }
+
+  // Marketing homepage (root path)
   return (
     <div style={{
       display: 'flex',
@@ -63,38 +81,22 @@ function App() {
         margin: '16px 0'
       }}></div>
 
-      <button
-        onClick={async () => {
-          const API_URL = 'https://kbcloud-backend-production.up.railway.app';
-          const urlParams = new URLSearchParams(window.location.search);
-          const referralCode = urlParams.get('ref');
-          if (referralCode) {
-            localStorage.setItem('referral_code', referralCode);
-          }
-          const storedCode = localStorage.getItem('referral_code');
-          
-          const response = await fetch(`${API_URL}/api/checkout/create-checkout-session`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ referralCode: storedCode })
-          });
-          const { url } = await response.json();
-          window.location.href = url;
-        }}
+      {/* This button should link to /services, not directly to Stripe */}
+      <a
+        href="/services"
         style={{
           backgroundColor: '#3fb950',
           color: 'white',
           padding: '12px 24px',
           borderRadius: '8px',
           fontWeight: '600',
-          border: 'none',
-          cursor: 'pointer',
+          textDecoration: 'none',
           fontSize: '16px',
           marginTop: '16px'
         }}
       >
-        Get Full Platform - $497/month
-      </button>
+        View Pricing & Products →
+      </a>
       <p style={{
         fontSize: '14px',
         color: '#9ca3af',
