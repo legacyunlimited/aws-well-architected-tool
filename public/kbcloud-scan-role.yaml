@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'KB Cloud Solutions - Read-only role for AWS Well-Architected assessment'
+
+Parameters:
+  ExternalId:
+    Type: String
+    Description: 'The External ID provided by KB Cloud Solutions for secure cross-account access'
+    MinLength: 16
+    MaxLength: 64
+
+Resources:
+  KBCloudScanRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: KBCloudSolutionsReadOnlyRole
+      Description: 'Read-only role for KB Cloud Solutions automated AWS assessment'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::YOUR_AWS_ACCOUNT_ID:root'
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref ExternalId
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+        - arn:aws:iam::aws:policy/AWSCloudShellFullAccess
+      Policies:
+        - PolicyName: KBCloudScanAdditionalPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - cloudformation:CreateStack
+                  - cloudformation:DeleteStack
+                  - cloudformation:DescribeStacks
+                  - iam:SetSecurityTokenServicePreferences
+                Resource: '*'
+
+Outputs:
+  RoleARN:
+    Description: 'The ARN of the created IAM Role'
+    Value: !GetAtt KBCloudScanRole.Arn
+  ConsoleLink:
+    Description: 'Link to view the role in IAM console'
+    Value: !Sub 'https://console.aws.amazon.com/iam/home#/roles/${KBCloudScanRole}'
