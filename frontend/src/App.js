@@ -5,10 +5,8 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import Questions from './pages/Questions';
 import CustomerPortal from './pages/CustomerPortal';
 
-
 function App() {
   const path = window.location.pathname;
-
 
   // Assessment entry - captures email first
   if (path === "/assessment") {
@@ -30,9 +28,16 @@ function App() {
     return <PaymentSuccess />;
   }
   
+  // Customer portal - view purchased reports
   if (path === "/customer-portal") {
-  return <CustomerPortal />;
-}
+    return <CustomerPortal />;
+  }
+  
+  // AWS connection page - after payment
+  if (path === "/connect-aws") {
+    return <ConnectAWS />;
+  }
+
   // Marketing homepage (root path)
   return (
     <div style={{
@@ -88,7 +93,6 @@ function App() {
         margin: '16px 0'
       }}></div>
 
-      {/* This button should link to /services, not directly to Stripe */}
       <a
         href="/services"
         style={{
@@ -115,4 +119,4 @@ function App() {
   );
 }
 
-export default App;// Force rebuild - Thu Apr  9 10:51:39 UTC 2026
+export default App;
