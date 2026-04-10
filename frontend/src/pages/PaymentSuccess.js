@@ -5,14 +5,28 @@ const API_BASE = "https://kbcloud-backend-production.up.railway.app";
 export default function PaymentSuccess() {
   const [status, setStatus] = useState('loading');
   const [reportInfo, setReportInfo] = useState(null);
+  const [countdown, setCountdown] = useState(5);
   
   useEffect(() => {
-    // Manual URL parsing instead of react-router-dom
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
       checkSessionStatus(sessionId);
+      
+      // Start countdown for redirect to AWS connection
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            window.location.href = `/connect-aws?session_id=${sessionId}`;
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      
+      return () => clearInterval(timer);
     } else {
       setStatus('error');
     }
@@ -51,29 +65,17 @@ export default function PaymentSuccess() {
         </>
       )}
       
-      {status === 'processing' && (
-        <>
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>📧</div>
-          <h1 style={{ color: '#2563eb' }}>Payment Confirmed!</h1>
-          <p>Your report is being generated and will be emailed to you shortly.</p>
-          <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '20px' }}>
-            This usually takes 5-10 minutes.
-          </p>
-        </>
-      )}
-      
-      {status === 'success' && (
+      {(status === 'processing' || status === 'success') && (
         <>
           <div style={{ fontSize: '48px', marginBottom: '20px' }}>✅</div>
           <h1 style={{ color: '#10b981' }}>Payment Successful!</h1>
           <p>Thank you for your purchase.</p>
-          <p>Your comprehensive AWS report is being generated and will be emailed to:</p>
-          <p style={{ fontWeight: 'bold', fontSize: '18px', margin: '20px 0' }}>
-            {reportInfo?.customerEmail || 'your email'}
+          <p style={{ margin: '20px 0' }}>
+            Next, we'll need read-only access to your AWS account to generate your report.
           </p>
           
           <div style={{ 
-            marginTop: '40px', 
+            marginTop: '30px', 
             padding: '20px', 
             background: '#f0f9ff', 
             borderRadius: '8px',
@@ -81,18 +83,22 @@ export default function PaymentSuccess() {
           }}>
             <h3 style={{ marginTop: 0 }}>What's Next?</h3>
             <ul style={{ paddingLeft: '20px' }}>
-              <li>✓ Check your email in the next 5-10 minutes</li>
-              <li>✓ Report includes detailed findings and recommendations</li>
-              <li>✓ Save the PDF for your records</li>
-              <li>✓ Reply to the email with any questions</li>
+              <li>✓ You'll be redirected to connect your AWS account</li>
+              <li>✓ We'll run an automated scan (5-10 minutes)</li>
+              <li>✓ Your comprehensive PDF report will be emailed to you</li>
+              <li>✓ You can track progress in the Customer Portal</li>
             </ul>
           </div>
           
+          <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '20px' }}>
+            Redirecting in {countdown} seconds...
+          </p>
+          
           <a 
-            href="/services" 
+            href={`/connect-aws?session_id=${new URLSearchParams(window.location.search).get('session_id')}`}
             style={{
               display: 'inline-block',
-              marginTop: '30px',
+              marginTop: '20px',
               padding: '12px 24px',
               background: '#2563eb',
               color: 'white',
@@ -101,7 +107,7 @@ export default function PaymentSuccess() {
               fontWeight: '500'
             }}
           >
-            ← Return to Services
+            Connect AWS Now →
           </a>
         </>
       )}
