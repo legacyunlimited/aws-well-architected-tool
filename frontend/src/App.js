@@ -1,4 +1,5 @@
 import EmailCapture from "./pages/EmailCapture";
+import ConnectAWS from "./pages/ConnectAWS";
 import Services from './pages/Services';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Questions from './pages/Questions';
