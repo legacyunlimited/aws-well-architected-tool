@@ -4,7 +4,6 @@ const API_BASE = "https://kbcloud-backend-production.up.railway.app";
 
 export default function PaymentSuccess() {
   const [status, setStatus] = useState('loading');
-  const [reportInfo, setReportInfo] = useState(null);
   const [countdown, setCountdown] = useState(5);
   
   useEffect(() => {
@@ -12,9 +11,19 @@ export default function PaymentSuccess() {
     const sessionId = urlParams.get('session_id');
     
     if (sessionId) {
-      checkSessionStatus(sessionId);
+      // Check session status
+      fetch(`${API_BASE}/stripe/session/${sessionId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'paid' || data.status === 'complete') {
+            setStatus('success');
+          } else {
+            setStatus('processing');
+          }
+        })
+        .catch(() => setStatus('error'));
       
-      // Start countdown for redirect to AWS connection
+      // Start countdown for redirect
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -31,23 +40,6 @@ export default function PaymentSuccess() {
       setStatus('error');
     }
   }, []);
-  
-  const checkSessionStatus = async (sessionId) => {
-    try {
-      const response = await fetch(`${API_BASE}/stripe/session/${sessionId}`);
-      const data = await response.json();
-      
-      if (data.status === 'paid' || data.status === 'complete') {
-        setStatus('success');
-        setReportInfo(data);
-      } else {
-        setStatus('processing');
-      }
-    } catch (error) {
-      console.error('Error checking session:', error);
-      setStatus('error');
-    }
-  };
   
   return (
     <div style={{ 
@@ -71,7 +63,7 @@ export default function PaymentSuccess() {
           <h1 style={{ color: '#10b981' }}>Payment Successful!</h1>
           <p>Thank you for your purchase.</p>
           <p style={{ margin: '20px 0' }}>
-            Next, we'll need read-only access to your AWS account to generate your report.
+            Next, we'll need read-only access to your AWS account.
           </p>
           
           <div style={{ 
@@ -83,10 +75,9 @@ export default function PaymentSuccess() {
           }}>
             <h3 style={{ marginTop: 0 }}>What's Next?</h3>
             <ul style={{ paddingLeft: '20px' }}>
-              <li>✓ You'll be redirected to connect your AWS account</li>
-              <li>✓ We'll run an automated scan (5-10 minutes)</li>
-              <li>✓ Your comprehensive PDF report will be emailed to you</li>
-              <li>✓ You can track progress in the Customer Portal</li>
+              <li>✓ You'll connect your AWS account</li>
+              <li>✓ We'll run an automated scan (5-10 min)</li>
+              <li>✓ Your PDF report will be emailed</li>
             </ul>
           </div>
           
@@ -116,7 +107,7 @@ export default function PaymentSuccess() {
         <>
           <div style={{ fontSize: '48px', marginBottom: '20px' }}>⚠️</div>
           <h1 style={{ color: '#ef4444' }}>Something went wrong</h1>
-          <p>Please contact support@kbcloudsolutions.com with your order details.</p>
+          <p>Please contact support@kbcloudsolutions.com</p>
           <a 
             href="/services" 
             style={{
