@@ -12,10 +12,10 @@ const PRICES = {
 
 // Sample report PDF paths (place PDFs in frontend/public/samples/)
 const SAMPLE_REPORTS = {
-  healthCheck: '/samples/health-check-sample.pdf',
-  costBlueprint: '/samples/blueprint-sample.pdf',
-  fullCleanup: '/samples/cleanup-sample.pdf',
-  platform: '/samples/platform-sample.pdf',
+  healthCheck: 'https://kbcloud-backend-production.up.railway.app/samples/health-check',
+  costBlueprint: 'https://kbcloud-backend-production.up.railway.app/samples/blueprint',
+  fullCleanup: 'https://kbcloud-backend-production.up.railway.app/samples/cleanup',
+  platform: 'https://kbcloud-backend-production.up.railway.app/samples/platform',
 };
 
 export default function Services() {
