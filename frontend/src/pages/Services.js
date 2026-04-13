@@ -10,6 +10,14 @@ const PRICES = {
   fullCleanup: 'price_1SVIbuADzK8DwhH4mgTfnZmu', // Replace with actual Price ID
 };
 
+// Sample report PDF paths (place PDFs in frontend/public/samples/)
+const SAMPLE_REPORTS = {
+  healthCheck: '/samples/health-check-sample.pdf',
+  costBlueprint: '/samples/blueprint-sample.pdf',
+  fullCleanup: '/samples/cleanup-sample.pdf',
+  platform: '/samples/platform-sample.pdf',
+};
+
 export default function Services() {
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
@@ -78,6 +86,31 @@ export default function Services() {
     }
   };
   
+  // Reusable styles
+  const buttonStyle = (loadingState) => ({
+    background: loadingState ? '#ccc' : '#1a56db',
+    color: 'white',
+    padding: '12px 24px',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '16px',
+    cursor: loadingState ? 'not-allowed' : 'pointer',
+    marginRight: '12px',
+  });
+  
+  const sampleLinkStyle = {
+    fontSize: '14px',
+    marginTop: '8px',
+  };
+  
+  const sampleLinkAnchorStyle = {
+    color: '#1a56db',
+    textDecoration: 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+  };
+  
   return (
     <div style={{ fontFamily: 'Arial', maxWidth: '900px', margin: 'auto', padding: '20px' }}>
       <h1>AWS Optimization Services</h1>
@@ -99,96 +132,101 @@ export default function Services() {
           <li>PDF reports</li>
           <li>Priority support</li>
         </ul>
-        <button 
-          onClick={handleSubscription}
-          disabled={loading}
-          style={{
-            background: loading === 'subscription' ? '#ccc' : '#1a56db',
-            color: 'white',
-            padding: '12px 24px',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '16px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-          }}
-        >
-          {loading === 'subscription' ? 'Processing...' : 'Subscribe Now'}
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <button 
+            onClick={handleSubscription}
+            disabled={loading}
+            style={buttonStyle(loading === 'subscription')}
+          >
+            {loading === 'subscription' ? 'Processing...' : 'Subscribe Now'}
+          </button>
+          <div style={sampleLinkStyle}>
+            <a href={SAMPLE_REPORTS.platform} target="_blank" rel="noopener noreferrer" style={sampleLinkAnchorStyle}>
+              📄 View sample dashboard →
+            </a>
+          </div>
+        </div>
       </div>
       
       {/* ONE-TIME PRODUCTS */}
-      <h2>1. AWS Health Check Report — <strong>$497</strong></h2>
-      <ul>
-        <li>12-pillar review</li>
-        <li>Security & IAM scan</li>
-        <li>Cost baseline</li>
-        <li>PDF report delivered within 48 hours</li>
-        <li>Read-only access only</li>
-      </ul>
-      <button 
-        onClick={() => handleOneTimePurchase(PRICES.healthCheck, 'health-check', 'health-check')}
-        disabled={loading}
-        style={{
-          background: loading === 'health-check' ? '#ccc' : '#1a56db',
-          color: 'white',
-          padding: '10px 20px',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-        }}
-      >
-        {loading === 'health-check' ? 'Processing...' : 'Buy Now - $497'}
-      </button>
       
-      <br /><br />
+      {/* Product 1: Health Check */}
+      <div style={{ marginBottom: '30px', paddingBottom: '20px', borderBottom: '1px solid #eee' }}>
+        <h2>1. AWS Health Check Report — <strong>$497</strong></h2>
+        <ul>
+          <li>12-pillar review</li>
+          <li>Security & IAM scan</li>
+          <li>Cost baseline</li>
+          <li>PDF report delivered within 48 hours</li>
+          <li>Read-only access only</li>
+        </ul>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <button 
+            onClick={() => handleOneTimePurchase(PRICES.healthCheck, 'health-check', 'health-check')}
+            disabled={loading}
+            style={buttonStyle(loading === 'health-check')}
+          >
+            {loading === 'health-check' ? 'Processing...' : 'Buy Now - $497'}
+          </button>
+          <div style={sampleLinkStyle}>
+            <a href={SAMPLE_REPORTS.healthCheck} target="_blank" rel="noopener noreferrer" style={sampleLinkAnchorStyle}>
+              📄 View sample report →
+            </a>
+          </div>
+        </div>
+      </div>
       
-      <h2>2. Cost Optimization Blueprint — <strong>$995</strong></h2>
-      <ul>
-        <li>Deep cost analysis</li>
-        <li>Waste detection</li>
-        <li>Rightsizing recommendations</li>
-        <li>S3 & backup improvements</li>
-        <li>PDF delivered in 72 hours</li>
-      </ul>
-      <button 
-        onClick={() => handleOneTimePurchase(PRICES.costBlueprint, 'cost-blueprint', 'cost-blueprint')}
-        disabled={loading}
-        style={{
-          background: loading === 'cost-blueprint' ? '#ccc' : '#1a56db',
-          color: 'white',
-          padding: '10px 20px',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-        }}
-      >
-        {loading === 'cost-blueprint' ? 'Processing...' : 'Buy Now - $995'}
-      </button>
+      {/* Product 2: Cost Optimization Blueprint */}
+      <div style={{ marginBottom: '30px', paddingBottom: '20px', borderBottom: '1px solid #eee' }}>
+        <h2>2. Cost Optimization Blueprint — <strong>$995</strong></h2>
+        <ul>
+          <li>Deep cost analysis</li>
+          <li>Waste detection</li>
+          <li>Rightsizing recommendations</li>
+          <li>S3 & backup improvements</li>
+          <li>PDF delivered in 72 hours</li>
+        </ul>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <button 
+            onClick={() => handleOneTimePurchase(PRICES.costBlueprint, 'cost-blueprint', 'cost-blueprint')}
+            disabled={loading}
+            style={buttonStyle(loading === 'cost-blueprint')}
+          >
+            {loading === 'cost-blueprint' ? 'Processing...' : 'Buy Now - $995'}
+          </button>
+          <div style={sampleLinkStyle}>
+            <a href={SAMPLE_REPORTS.costBlueprint} target="_blank" rel="noopener noreferrer" style={sampleLinkAnchorStyle}>
+              📄 View sample report →
+            </a>
+          </div>
+        </div>
+      </div>
       
-      <br /><br />
-      
-      <h2>3. Full Cloud Cleanup — <strong>$2,497</strong></h2>
-      <ul>
-        <li>IAM cleanup</li>
-        <li>S3 lifecycle setup</li>
-        <li>Backup + cost control automation</li>
-        <li>Security tightening</li>
-        <li>Delivered in 5–7 days</li>
-      </ul>
-      <button 
-        onClick={() => handleOneTimePurchase(PRICES.fullCleanup, 'full-cleanup', 'full-cleanup')}
-        disabled={loading}
-        style={{
-          background: loading === 'full-cleanup' ? '#ccc' : '#1a56db',
-          color: 'white',
-          padding: '10px 20px',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-        }}
-      >
-        {loading === 'full-cleanup' ? 'Processing...' : 'Buy Now - $2,497'}
-      </button>
+      {/* Product 3: Full Cloud Cleanup */}
+      <div style={{ marginBottom: '30px', paddingBottom: '20px', borderBottom: '1px solid #eee' }}>
+        <h2>3. Full Cloud Cleanup — <strong>$2,497</strong></h2>
+        <ul>
+          <li>IAM cleanup</li>
+          <li>S3 lifecycle setup</li>
+          <li>Backup + cost control automation</li>
+          <li>Security tightening</li>
+          <li>Delivered in 5–7 days</li>
+        </ul>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <button 
+            onClick={() => handleOneTimePurchase(PRICES.fullCleanup, 'full-cleanup', 'full-cleanup')}
+            disabled={loading}
+            style={buttonStyle(loading === 'full-cleanup')}
+          >
+            {loading === 'full-cleanup' ? 'Processing...' : 'Buy Now - $2,497'}
+          </button>
+          <div style={sampleLinkStyle}>
+            <a href={SAMPLE_REPORTS.fullCleanup} target="_blank" rel="noopener noreferrer" style={sampleLinkAnchorStyle}>
+              📄 View sample report →
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
