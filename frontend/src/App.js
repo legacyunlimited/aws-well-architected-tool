@@ -4,16 +4,22 @@ import Services from './pages/Services';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Questions from './pages/Questions';
 import CustomerPortal from './pages/CustomerPortal';
+import Assessment from './pages/Assessment';  // ✅ Keep this
 
 function App() {
   const path = window.location.pathname;
 
-  // Assessment entry - captures email first
+  // NEW: Assessment page - no login required, captures ref param
   if (path === "/assessment") {
+    return <Assessment />;  // ✅ Changed from EmailCapture to Assessment
+  }
+
+  // Email capture page (if you still need it for something else)
+  if (path === "/email-capture") {
     return <EmailCapture />;
   }
 
-  // Questions page - after email capture
+  // Questions page - after email capture (legacy, maybe remove later)
   if (path === "/questions") {
     return <Questions />;
   }
