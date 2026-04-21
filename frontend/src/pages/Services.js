@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const API_BASE = "https://kbcloud-backend-production.up.railway.app";
 
@@ -21,7 +21,35 @@ const SAMPLE_REPORTS = {
 export default function Services() {
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
-  
+  const [referrerCode, setReferrerCode] = useState(null);
+
+  // NEW: Capture referrer code from URL when page loads
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    
+    // Also check localStorage (in case it was stored from assessment page)
+    const storedRef = localStorage.getItem('referrerCode') || sessionStorage.getItem('referrerCode');
+    
+    const finalRef = ref || storedRef;
+    
+    if (finalRef) {
+      setReferrerCode(finalRef);
+      // Store it for checkout to use
+      sessionStorage.setItem('referrerCode', finalRef);
+      localStorage.setItem('referrerCode', finalRef);
+      console.log('Referrer captured on services page:', finalRef);
+    }
+  }, []);
+
+  // Helper function to add referrer to checkout request
+  const addReferrerToRequest = (requestBody) => {
+    if (referrerCode) {
+      return { ...requestBody, referrerCode: referrerCode };
+    }
+    return requestBody;
+  };
+
   const handleSubscription = async () => {
     setLoading('subscription');
     setError(null);
@@ -36,10 +64,11 @@ export default function Services() {
     sessionStorage.setItem('assessmentEmail', email);
     
     try {
+      const requestBody = addReferrerToRequest({ customerEmail: email });
       const response = await fetch(`${API_BASE}/stripe/create-subscription-checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customerEmail: email }),
+        body: JSON.stringify(requestBody),
       });
       
       if (!response.ok) throw new Error('Failed to create checkout');
@@ -66,14 +95,16 @@ export default function Services() {
     sessionStorage.setItem('assessmentEmail', email);
     
     try {
+      const requestBody = addReferrerToRequest({
+        priceId,
+        customerEmail: email,
+        productType,
+      });
+      
       const response = await fetch(`${API_BASE}/stripe/create-onetime-checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          priceId,
-          customerEmail: email,
-          productType,
-        }),
+        body: JSON.stringify(requestBody),
       });
       
       if (!response.ok) throw new Error('Failed to create checkout session');
@@ -115,6 +146,20 @@ export default function Services() {
     <div style={{ fontFamily: 'Arial', maxWidth: '900px', margin: 'auto', padding: '20px' }}>
       <h1>AWS Optimization Services</h1>
       <p>No phone calls. No meetings. Clear deliverables. Fast turnaround.</p>
+      
+      {/* NEW: Show active referral */}
+      {referrerCode && (
+        <div style={{
+          background: '#e6f7e6',
+          padding: '10px',
+          marginBottom: '20px',
+          borderRadius: '4px',
+          border: '1px solid #2ecc71',
+          textAlign: 'center'
+        }}>
+          ✓ Partner referral active: {referrerCode} (your partner earns 20% commission)
+        </div>
+      )}
       
       {error && (
         <div style={{ background: '#fee', padding: '10px', marginBottom: '20px', borderRadius: '4px', color: '#c00' }}>
